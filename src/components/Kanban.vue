@@ -2,56 +2,66 @@
     <el-aside>
         <el-menu 
         @select="handleMenuSelect"
-        :default-active="'/'+this.$route.path.split('/')[1]"
+        :default-active="'1'"
         active-text-color="#66b1ff"
         background-color="#1d3043"
-        text-color="white">
-            <el-menu-item v-for="(item,index) in kanbanList" :key="index" :index="item.path">
+        text-color="white"
+        class="noselect">
+            <el-menu-item v-for="(item,index) in kanbanList" :key="index" :index="item.KANBAN_ID.toString()">
                 <div>
                     <el-icon><IceTea /></el-icon>
-                    {{item.name}}
+                     {{item.NAME}}
                 </div>
-                <el-icon><Star /></el-icon>
+                <div v-if="item.KANBAN_ID!=1" @click="changeStar">
+                    <el-icon v-if="!starStatus"><Star /></el-icon>
+                    <el-icon v-if="starStatus"><StarFilled /></el-icon>
+                </div>
             </el-menu-item>
             
-            <el-menu-item index="3" disabled>
-                <div>
-                    <el-icon><Watermelon /></el-icon>
-					研究所板
-                </div>
-
+            <!-- 預設看板 -->
+            <el-menu-item :index="(kanbanList.length+1).toString()">
+                <div><el-icon><Watermelon /></el-icon>常見問題</div>
+            </el-menu-item>
+            <el-menu-item disabled>
+                <div><el-icon><Watermelon /></el-icon>研究所板</div>
             </el-menu-item>
 
         </el-menu>
     </el-aside>
 </template>
-  
+
 <script>
+import axios from 'axios';
 export default {
     name: 'Kanban',
     data(){
         return{
-            kanbanList:[
-                { name: '所有看板', path:'/' },
-                { name: '考試板'  , path:'/about'},
-                { name: '考試板2' ,  path:'/test' },
-            ]
+            kanbanList:[],
+            starStatus:false
         }
     },
     methods:{
         handleMenuSelect(index){
-            if(this.$route.path === index) return;
-            this.$router.push(index);
+            // 跳轉到常見問題
+            if(index == this.kanbanList.length+1){
+                this.$router.push('/about');
+            } else {
+                this.$router.push('/');
+            }
+        },
+        changeStar(){
+            this.starStatus = !this.starStatus;
         }
     },
     mounted(){
-        
+        axios.get('http://itdove.ddns.net:3000/public/article').then((response)=>{
+            this.kanbanList = Object.assign([], response.data);
+        })
     }
 }
 </script>
 
 <style scoped>
-
 .el-menu{
     width:80%;
     margin:0 auto;
