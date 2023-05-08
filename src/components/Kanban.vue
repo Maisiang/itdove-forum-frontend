@@ -2,7 +2,7 @@
     <el-aside>
         <el-menu 
         @select="handleMenuSelect"
-        :default-active="'1'"
+        :default-active="this.$route.params.id"
         active-text-color="#66b1ff"
         background-color="#1d3043"
         text-color="white"
@@ -12,7 +12,7 @@
                     <el-icon><IceTea /></el-icon>
                      {{item.NAME}}
                 </div>
-                <div v-if="item.KANBAN_ID!=1" @click="changeStar">
+                <div v-if="item.KANBAN_ID!=1" @click="this.starStatus = !this.starStatus;">
                     <el-icon v-if="!starStatus"><Star /></el-icon>
                     <el-icon v-if="starStatus"><StarFilled /></el-icon>
                 </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import {apiGetKanban} from '@/assets/scripts/api';
 export default {
     name: 'Kanban',
     data(){
@@ -41,20 +41,18 @@ export default {
         }
     },
     methods:{
+        // 看板跳轉
         handleMenuSelect(index){
-            // 跳轉到常見問題
             if(index == this.kanbanList.length+1){
                 this.$router.push('/about');
             } else {
-                this.$router.push('/');
+                this.$router.push('/kanban/' + index);
             }
         },
-        changeStar(){
-            this.starStatus = !this.starStatus;
-        }
     },
     mounted(){
-        axios.get('http://itdove.ddns.net:3000/public/article').then((response)=>{
+        // 取得所有看板
+        apiGetKanban().then((response)=>{
             this.kanbanList = Object.assign([], response.data);
         })
     }

@@ -4,19 +4,23 @@
     class="article-list"
     v-infinite-scroll="load" 
     :infinite-scroll-disabled="disabled">
-        <li v-for="(item,index) in count.slice(0, num)" :key="index" class="article-list-item">
-            <el-text truncated>{{ item }}</el-text>
+        <li v-for="(item,index) in articleList.slice(0, num)" :key="index" class="article-list-item">
+            <div style="display: flex; flex-direction: column;">
+                <el-text truncated>{{ item.TITLE }}</el-text>
+                <el-text truncated>{{ item.CONTENT }}</el-text>
+            </div>
         </li>
     </ul>
-    <p v-if="isEmpty">No more</p>
+    <p v-if="isEmpty">目前沒有更多文章...</p>
 </template>
   
 <script>
+import {apiGetArticle} from '@/assets/scripts/api';
 export default{
     data(){
         return{
             num:5,
-            count:['hellohellohellohello','hello3','hello','hello2','hello3','hello','hello2','hello3','hello','hello2','hello3','hello','hello12321323232132','hello3','hello','hello2','hello3','hello','hello2','hello3','hello','hello2','hello3','hello','hello2','hello3','hello','hello2','hello3','hello','hello2','hell12321321321321o3',],
+            articleList:[],
             isLoading:false,
             isEmpty:false,
             disabled:false
@@ -25,7 +29,7 @@ export default{
     methods:{
         load (){
             setTimeout(() => {
-                if(this.num >= this.count.length){
+                if(this.num >= this.articleList.length){
                     this.disabled = true;
                     this.isEmpty = true;
                 } else {
@@ -33,7 +37,21 @@ export default{
                 }
             }, 1000);
         }
-    }
+    },
+    mounted(){
+        apiGetArticle(this.$route.params.id).then((response)=>{
+            this.articleList = Object.assign([], response.data);
+        });
+    },
+    watch: {
+        '$route.params.id'(newVal, oldVal) {
+            if (this.$route.path.startsWith('/kanban/')){
+                apiGetArticle(this.$route.params.id).then((response)=>{
+                    this.articleList = Object.assign([], response.data);
+                });
+            }
+        }
+    },
 }
 </script>
   

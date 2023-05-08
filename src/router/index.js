@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
     {
         path: "/:catchAll(.*)",
-        redirect : '/',
+        redirect : '/0',
     },
     {   // 公開頁面
         path: '/',
@@ -11,7 +11,7 @@ const routes = [
         component: () => import('@/views/PublicView.vue'),
         children: [
             {
-                path: '',
+                path: 'kanban/:id',
                 name: 'Home',
                 component: () => import('@/views/Public/HomeView.vue'),
             },
