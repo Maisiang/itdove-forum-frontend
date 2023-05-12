@@ -2,6 +2,7 @@ import axios from 'axios';
 
 // 建立各API的Axios實體
 const apiServerURL = 'http://itdove.ddns.net:3000';
+
 const publicRequest = axios.create({
     baseURL: apiServerURL + '/public/',
 });
@@ -14,7 +15,7 @@ const adminRequest = axios.create({
 
 // 公開頁面
 export const apiGetKanban   = () => publicRequest.get('/kanban');
-export const apiGetArticle  = (kanbanID) => publicRequest.get('/article/'+kanbanID);
+export const apiGetArticle  = (kanbanName, page) => publicRequest.get('/article/' + kanbanName + "?page=" + page);
 
 // 用戶頁面
 // 管理員頁面

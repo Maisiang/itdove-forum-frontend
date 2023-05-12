@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
     {
         path: "/:catchAll(.*)",
-        redirect : '/0',
+        redirect : '/',
     },
     {   // 公開頁面
         path: '/',
@@ -11,7 +11,7 @@ const routes = [
         component: () => import('@/views/PublicView.vue'),
         children: [
             {
-                path: 'kanban/:id',
+                path: 'kanban/:kanbanName',
                 name: 'Home',
                 component: () => import('@/views/Public/HomeView.vue'),
             },
@@ -24,14 +24,15 @@ const routes = [
     },
 
 ];
-// 切換頁面時移到最上方
-/*router.afterEach((to, from,next) => {
-    window.scrollTo(0,0);
-})*/
+
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+// 切換頁面時移到最上方
+router.afterEach((to, from,next) => {
+    window.scrollTo(0,0);
 })
 
 export default router

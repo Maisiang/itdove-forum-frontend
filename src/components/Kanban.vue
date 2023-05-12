@@ -2,12 +2,12 @@
     <el-aside>
         <el-menu 
         @select="handleMenuSelect"
-        :default-active="this.$route.params.id"
+        :default-active="this.$route.path"
         active-text-color="#66b1ff"
         background-color="#1d3043"
         text-color="white"
         class="noselect">
-            <el-menu-item v-for="(item,index) in kanbanList" :key="index" :index="item.KANBAN_ID.toString()">
+            <el-menu-item v-for="(item,index) in kanbanList" :key="index" :index="'/kanban/'+item.NAME_EN">
                 <div>
                     <el-icon><IceTea /></el-icon>
                      {{item.NAME}}
@@ -19,7 +19,7 @@
             </el-menu-item>
             
             <!-- 預設看板 -->
-            <el-menu-item :index="(kanbanList.length+1).toString()">
+            <el-menu-item index="/about">
                 <div><el-icon><Watermelon /></el-icon>常見問題</div>
             </el-menu-item>
             <el-menu-item disabled>
@@ -42,12 +42,8 @@ export default {
     },
     methods:{
         // 看板跳轉
-        handleMenuSelect(index){
-            if(index == this.kanbanList.length+1){
-                this.$router.push('/about');
-            } else {
-                this.$router.push('/kanban/' + index);
-            }
+        handleMenuSelect(path){
+            this.$router.push(path);
         },
     },
     mounted(){

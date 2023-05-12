@@ -4,9 +4,9 @@
     class="article-list"
     v-infinite-scroll="load" 
     :infinite-scroll-disabled="disabled">
-        <li v-for="(item,index) in articleList.slice(0, num)" :key="index" class="article-list-item">
-            <div style="display: flex; flex-direction: column;">
-                <el-text truncated>{{ item.TITLE }}</el-text>
+        <li v-for="(item,index) in articleList" :key="index" class="article-list-item">
+            <div style="display: flex; flex-direction: column; width:100%;">
+                <h1><el-text truncated>{{ item.TITLE }}</el-text></h1>
                 <el-text truncated>{{ item.CONTENT }}</el-text>
             </div>
         </li>
@@ -19,37 +19,42 @@ import {apiGetArticle} from '@/assets/scripts/api';
 export default{
     data(){
         return{
-            num:5,
-            articleList:[],
-            isLoading:false,
-            isEmpty:false,
-            disabled:false
+            page:       -1,  // 頁數
+            articleList:[], // 文章列表
+            isEmpty:    false,
+            disabled:   false,
+            loading:    false
         }
     },
     methods:{
         load (){
-            setTimeout(() => {
-                if(this.num >= this.articleList.length){
-                    this.disabled = true;
-                    this.isEmpty = true;
-                } else {
-                    this.num +=4;
-                }
-            }, 1000);
+            this.disabled = true;
+            setTimeout(async () => {
+                this.page++;
+                await apiGetArticle(this.$route.params.kanbanName,this.page).then((response)=>{
+                    if(response.data.length != 0){
+                        this.articleList = this.articleList.concat(response.data);
+                        if(response.data.length < 10){
+                            this.isEmpty = true;
+                        } else {
+                            this.disabled = false;
+                        }
+                    } else {
+                        this.isEmpty = true;
+                    }
+                });
+            }, 500);
         }
     },
     mounted(){
-        apiGetArticle(this.$route.params.id).then((response)=>{
-            this.articleList = Object.assign([], response.data);
-        });
+        this.load();
     },
     watch: {
-        '$route.params.id'(newVal, oldVal) {
-            if (this.$route.path.startsWith('/kanban/')){
-                apiGetArticle(this.$route.params.id).then((response)=>{
-                    this.articleList = Object.assign([], response.data);
-                });
-            }
+        '$route.params.kanbanName'(newVal, oldVal) {
+            this.isEmpty = false;
+            this.page = -1;
+            this.articleList = [];
+            this.load();
         }
     },
 }
@@ -59,8 +64,8 @@ export default{
 .article-list .article-list-item {
     display: flex;
     align-items: center;
-    height: 150px;
-    border-top:2px black solid;
-
+    height: 80px;
+    border:2px black solid;
+    margin-top: 5px;
 }
 </style>
