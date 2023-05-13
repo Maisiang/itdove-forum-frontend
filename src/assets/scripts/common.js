@@ -1,5 +1,7 @@
 import router from '@/router';
 
+export const MEDIA_MAX_WIDTH = '768';
+
 // 檢查用戶設備是否為手機
 export function isMobile(){
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
