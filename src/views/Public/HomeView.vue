@@ -2,12 +2,12 @@
     <h1>所有看板</h1>
     <ul 
     class="article-list"
-    v-infinite-scroll="load" 
+    v-infinite-scroll="loadArticle" 
     :infinite-scroll-disabled="disabled">
         <li v-for="(item,index) in articleList" :key="index" class="article-list-item">
             <div style="display: flex; flex-direction: column; width:100%;">
-                <h1><el-text truncated>{{ item.TITLE }}</el-text></h1>
-                <el-text truncated>{{ item.CONTENT }}</el-text>
+                <h1><el-text truncated>{{ item.title }}</el-text></h1>
+                <el-text truncated>{{ item.content }}</el-text>
             </div>
         </li>
     </ul>
@@ -27,34 +27,34 @@ export default{
         }
     },
     methods:{
-        load (){
+        loadArticle (){
             this.disabled = true;
-            setTimeout(async () => {
-                this.page++;
-                await apiGetArticle(this.$route.params.kanbanName,this.page).then((response)=>{
-                    if(response.data.length != 0){
-                        this.articleList = this.articleList.concat(response.data);
-                        if(response.data.length < 10){
-                            this.isEmpty = true;
-                        } else {
-                            this.disabled = false;
-                        }
-                    } else {
+            this.page++;
+            apiGetArticle(this.$route.params.kanbanName,this.page).then((response)=>{
+                if(response.data.length != 0){
+                    this.articleList = this.articleList.concat(response.data);
+                    if(response.data.length < 10){
                         this.isEmpty = true;
+                    } else {
+                        this.disabled = false;
                     }
-                });
-            }, 500);
+                } else {
+                    this.isEmpty = true;
+                }
+            });
         }
     },
     mounted(){
-        this.load();
+        this.loadArticle ();
     },
     watch: {
         '$route.params.kanbanName'(newVal, oldVal) {
-            this.isEmpty = false;
-            this.page = -1;
-            this.articleList = [];
-            this.load();
+            if(newVal != undefined){
+                this.isEmpty = false;
+                this.page = -1;
+                this.articleList = [];
+                this.loadArticle();
+            }
         }
     },
 }

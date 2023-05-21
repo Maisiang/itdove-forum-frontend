@@ -9,12 +9,12 @@
             text-color="white"
             class="noselect">
                 <!-- 資料庫看板 -->
-                <el-menu-item v-for="(item,index) in kanbanList" :key="index" :index="'/kanban/'+item.NAME_EN">
+                <el-menu-item v-for="(item,index) in kanbanList" :key="index" :index="'/kanban/'+item.name_en">
                     <div>
                         <el-icon><IceTea /></el-icon>
-                        {{item.NAME}}
+                        {{item.name}}
                     </div>
-                    <div v-if="item.KANBAN_ID!=1" @click.stop="this.starStatus = !this.starStatus;">
+                    <div v-if="item.kanban_id!=1" @click.stop="this.starStatus = !this.starStatus;">
                         <el-icon v-if="!starStatus"><Star /></el-icon>
                         <el-icon v-if="starStatus"><StarFilled /></el-icon>
                     </div>

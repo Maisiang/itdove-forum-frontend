@@ -2,18 +2,19 @@ import { ElMessage } from 'element-plus'
 import { ElNotification } from 'element-plus'
 import { h } from 'vue'
 
-export function loginSuccess(){
+export function successNotify(title, message){
     ElNotification.success({
-        title: '提示',
-        message: h('b', { style: 'color: green' }, '登入成功！'),
+        title: title,
+        message: h('b', { style: 'color: green' }, message),
         duration: 1500,
         position: 'bottom-right',
     })
 }
-export function loginFail(){
+
+export function failNotify(title, message){
     ElNotification.error({
-        title: '提示',
-        message: h('b', { style: 'color: red' }, '登入失敗！'),
+        title: title,
+        message: h('b', { style: 'color: red' }, message),
         duration: 1500,
         position: 'bottom-right',
         dangerouslyUseHTMLString: true,

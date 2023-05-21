@@ -1,5 +1,9 @@
 <template>
-	<el-container>
+	<el-container
+		v-loading.fullscreen.lock="loadingStatus"
+		element-loading-text="載入中..."
+    	element-loading-background="rgba(120, 120, 120, 0.3)"
+	>
 		<el-header>
 			<Header></Header>
 		</el-header>
@@ -14,8 +18,21 @@
 import Header from '@/components/Header.vue';
 export default{
 	name:'App',
+	data(){
+		return{
+			loadingStatus:false
+		}
+	},
 	components:{
 		Header,
+	},
+	created() {
+		this.$store.watch(
+			state => state.isLoading,
+			(newVal, oldVal) => {
+				this.loadingStatus = newVal;
+			}
+		);
 	}
 }
 </script>
